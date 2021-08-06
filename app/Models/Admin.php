@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Admin extends Authenticatable
 {
     use Notifiable;
+    use Sortable;
+
+    protected $table = 'admins';
+
+    public $sortable = [
+        'id',
+        'name',
+        'created_at',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +25,9 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'login_id', 'password',
+        'name',
+        'login_id',
+        'password',
     ];
 
     /**
@@ -25,6 +36,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 }
