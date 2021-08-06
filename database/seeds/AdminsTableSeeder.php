@@ -12,6 +12,9 @@ class AdminsTableSeeder extends Seeder
      */
     public function run()
     {
+        // データのクリア
+        DB::table('admins')->truncate();
+
         DB::table('admins')->insert([
             'name'              => 'user',
             'login_id'          => '12345678',

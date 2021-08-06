@@ -22,16 +22,32 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function () {
 
     // ログイン認証関連
     Auth::routes([
-        'register' => true,
+        'register' => false,
         'reset'    => false,
         'verify'   => false
     ]);
 
     // ログイン認証後
     Route::middleware('auth:user')->group(function () {
+        // ホーム画面
+        Route::resource('home', 'HomeController')
+               ->only(['index']);
 
-        // TOPページ
-        Route::resource('home', 'HomeController', ['only' => 'index']);
+        // お知らせ一覧画面
+        Route::resource('information', 'InformationController')
+               ->only(['index']);
+
+        // メンバーリスト画面
+        Route::resource('member', 'MemberController')
+               ->only(['index']);
+
+        // プロフィール画面
+        Route::resource('profile', 'ProfileController')
+               ->only(['show', 'edit', 'update']);
+
+        // パスワード変更画面
+        Route::resource('password', 'PasswordController')
+               ->only(['index', 'update']);
 
     });
 });
@@ -50,9 +66,17 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
 
     // ログイン認証後
     Route::middleware('auth:admin')->group(function () {
+        // ホーム画面
+        Route::resource('home', 'HomeController')
+               ->only(['index']);
 
-        // TOPページ
-        Route::resource('home', 'HomeController', ['only' => 'index']);
+        // お知らせ設定画面
+        Route::resource('information', 'InformationController')
+               ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+        // メンバー設定画面
+        Route::resource('member', 'MemberController')
+               ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
     });
 
