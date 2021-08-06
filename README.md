@@ -3,7 +3,7 @@
 
 ## 使用言語など
 ・PHP 7.3.24  
-・Larabel 6.20.17  
+・Larabel 6.20.31  
 ・MySQL 5.7  
 ・JavaScript  
 ・JQuery  

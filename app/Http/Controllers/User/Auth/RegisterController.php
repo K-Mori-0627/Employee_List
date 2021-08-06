@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class RegisterController extends Controller
 {
@@ -38,7 +41,19 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest:user');
+    }
+
+    // Guardの認証方法を指定
+    protected function guard()
+    {
+        return Auth::guard('user');
+    }
+
+    // 新規登録画面
+    public function showRegistrationForm()
+    {
+        return view('user.auth.register');
     }
 
     /**
@@ -51,7 +66,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'login_id' => ['required', 'string', 'min:8','max:12','alpha_num','unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -66,7 +81,7 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'login_id' => $data['login_id'],
             'password' => Hash::make($data['password']),
         ]);
     }
