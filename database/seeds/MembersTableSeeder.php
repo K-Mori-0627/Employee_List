@@ -15,7 +15,7 @@ class MembersTableSeeder extends Seeder
         DB::table('members')->truncate();
 
         DB::table('members')->insert([
-            'member_id'         => '001',
+            'member_id'         => '0001',
             'role'              => '0',
             'department'        => '0',
             'email'             => 'test@test.com'

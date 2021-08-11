@@ -68,7 +68,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         // ホーム画面
         Route::resource('home', 'HomeController')
-               ->only(['index']);
+               ->only(['index', 'edit', 'update', 'destroy']);
 
         // お知らせ設定画面
         Route::resource('information', 'InformationController')

@@ -1,85 +1,108 @@
 <?php
 
+/**
+ * プロフィール画面コントローラーのファイル
+ *
+ * プロフィール画面に関連する処理を記載
+ *
+ * @version 1.0
+ * @author K-Mori
+ */
+
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Member;
+use App\Http\Utility\Utility;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * プロフィール画面コントローラー
+ *
+ * プロフィール画面に関連する処理を記載
+ */
 class ProfileController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * コンストラクタ
      */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->middleware('auth:user');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * プロフィール画面初期表示
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
+     * @param Integer $id ユーザーID
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        $Query = User::query();
+        $mixProfile = $Query->join('members', 'members.member_id', 'users.member_id')
+                            ->join('code_table', 'code_table.value', 'members.role')
+                            ->where('code_type', '役職')
+                            ->where('users.member_id', $id)
+                            ->first();
+
+        return view('user/Profile', compact('mixProfile'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * プロフィール編集画面初期表示
      *
-     * @param  int  $id
+     * @param Integer $id ユーザーID
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        //
+        $mixProfile = User::find($id);
+
+        $Utility = new Utility();
+        $aryRoleData = $Utility::GetRoleData();
+
+        return view('user/ProfileEdit', compact('mixProfile', 'aryRoleData'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * プロフィール編集処理
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param Integer $id ユーザーID
+     * @param Request $request 登録データ
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'login_id' => ['required', 'min:8', 'max:20'],
+            'name' => ['required', 'max:20'],
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $aryParams = $request->all();
+        unset($aryParams['_token']);
+
+        // DBトランザクション開始
+        DB::beginTransaction();
+
+        try {
+            User::where('id', $id)->update([
+                'name' => $aryParams['name'],
+                'login_id' => $aryParams['login_id'],
+                'hobby' => $aryParams['hobby'],
+                'freespace' => $aryParams['freespace'],
+                'profile_img' => $aryParams['profile_img'],
+            ]);
+
+            DB::commit();
+            session()->flash('msg_success', '登録が完了しました。');
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('msg_error', '登録に失敗しました。');
+        }
+
+        return redirect()->route('user.profile.show', $id);
     }
 }

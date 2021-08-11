@@ -1,85 +1,80 @@
 <?php
 
+/**
+ * パスワード変更画面コントローラーのファイル
+ *
+ * パスワード変更画面に関連する処理を記載
+ *
+ * @version 1.0
+ * @author K-Mori
+ */
+
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Rules\PasswordRule;
+use App\Rules\CurrentPasswordRule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
+/**
+ * パスワード変更画面コントローラー
+ *
+ * パスワード変更画面に関連する処理を記載
+ */
 class PasswordController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * コンストラクタ
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:user');
+    }
+
+    /**
+     * パスワード変更画面初期表示
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return view('user/Password');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * パスワード更新処理
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param Request $request 登録データ
+     * @param Integer $id ユーザーID
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'current' => ['required', 'min:8', 'max:15', new PasswordRule(), new CurrentPasswordRule()],
+            'password' => ['required', 'min:8', 'max:15', 'confirmed', new PasswordRule()],
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $aryParams = $request->all();
+        unset($aryParams['_token']);
+
+        // DBトランザクション開始
+        DB::beginTransaction();
+
+        try {
+            User::where('id', $id)->update([
+                'password' => Hash::make($aryParams['password']),
+            ]);
+            DB::commit();
+            session()->flash('msg_success', 'パスワード変更が完了しました。');
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('msg_error', 'パスワード変更に失敗しました。');
+        }
+
+        return redirect()->route('user.profile.show', $id);
     }
 }

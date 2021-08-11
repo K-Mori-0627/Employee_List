@@ -20,6 +20,7 @@ class CreateMembersTable extends Migration
             $table->char('department')->length(1);
             $table->string('email')->unique();
             $table->date('birthday')->nullable();
+            $table->text('technology')->nullable();
             $table->text('hobby')->nullable();
             $table->text('freespace')->nullable();
             $table->timestamps();

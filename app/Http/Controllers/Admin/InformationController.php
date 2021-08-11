@@ -1,85 +1,155 @@
 <?php
 
+/**
+ * お知らせ一覧画面コントローラーのファイル
+ *
+ * お知らせ一覧画面に関連する処理を記載
+ *
+ * @version 1.0
+ * @author K-Mori
+ */
+
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Information;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * お知らせ一覧画面コントローラー
+ *
+ * お知らせ一覧画面に関連する処理を記載
+ */
 class InformationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * コンストラクタ
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
+
+    /**
+     * お知らせリスト画面初期表示
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $mixInfo = Information::select()->sortable()->paginate(10);
+
+        return view('admin/InformationSetting', compact('mixInfo'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * お知らせ登録画面表示
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        return view('admin/InformationRegister');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * お知らせ登録処理
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request 登録データ
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'subject' => ['required', 'max:255'],
+        ]);
+
+        $aryParams = $request->all();
+        unset($aryParams['_token']);
+
+        // DBトランザクション開始
+        DB::beginTransaction();
+
+        try {
+            Information::create([
+                'subject' => $aryParams['subject'],
+            ]);
+            DB::commit();
+            session()->flash('msg_success', '登録が完了しました。');
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('msg_error', '登録に失敗しました。');
+        }
+
+        return redirect()->route('admin.information.index');
     }
 
     /**
-     * Display the specified resource.
+     * お知らせ更新画面表示
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
+     * @param integer $id お知らせID
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        //
+        $mixInfo = Information::find($id);
+
+        return view('admin/InformationEdit', compact('mixInfo'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * お知らせ更新処理
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param Request $_request 登録データ
+     * @param integer $id お知らせID
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'subject' => ['required', 'max:255'],
+        ]);
+
+        $aryParams = $request->all();
+        unset($aryParams['_token']);
+
+        // DBトランザクション開始
+        DB::beginTransaction();
+
+        try {
+            $mixArticle = Information::find($id);
+            $mixArticle->fill($aryParams)->save();
+            DB::commit();
+            session()->flash('msg_success', '登録が完了しました。');
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('msg_error', '登録に失敗しました。');
+        }
+
+        return redirect()->route('admin.information.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * お知らせ削除処理
      *
-     * @param  int  $id
+     * @param integer $id 削除データ
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        // DBトランザクション開始
+        DB::beginTransaction();
+
+        try {
+            Information::where('id', $id)->delete();
+            DB::commit();
+            session()->flash('msg_success', '削除が完了しました。');
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('msg_error', '削除に失敗しました。');
+        }
+
+        return redirect()->route('admin.information.index');
     }
 }

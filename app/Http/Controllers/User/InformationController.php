@@ -1,85 +1,44 @@
 <?php
 
+/**
+ * お知らせ一覧画面コントローラーのファイル
+ *
+ * お知らせ一覧画面に関連する処理を記載
+ *
+ * @version 1.0
+ * @author K-Mori
+ */
+
 namespace App\Http\Controllers\User;
 
+use App\Models\Information;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
+/**
+ * お知らせ一覧画面コントローラー
+ *
+ * お知らせ一覧画面に関連する処理を記載
+ */
 class InformationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * コンストラクタ
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:user');
+    }
+
+    /**
+     * お知らせ一覧画面初期表示
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
-    }
+        // お知らせ取得
+        $mixInfo = Information::orderby('created_at', 'desc')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('user.information', compact('mixInfo'));
     }
 }
