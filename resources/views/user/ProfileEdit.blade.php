@@ -7,7 +7,7 @@
     <div class="container wrapper">
         <h1><i class="fas fa-edit"></i> プロフィール編集</h1>
         <hr />
-        <form action="{{ route('user.profile.update', ['profile' => Auth::user()->member_id]) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+        <form action="{{ route('user.profile.update', ['profile' => Auth::user()->employee_id]) }}" method="POST" enctype="multipart/form-data" autocomplete="off">
             @method('PUT')
             @csrf
             <div class="mb-3" align="center">
@@ -33,7 +33,7 @@
             <div class="row mb-3">
                 <div class="col-lg-6 col-md-6 mb-3">
                     <h6 style="text-align:left;"><i class="fa fa-birthday-cake"></i> 誕生日</h6>
-                    {{ Form::Text('birthday', $mixProfile['birthday'], ['class' => 'form-control', 'id' => 'birthday']) }}
+                    <vuejs-datepicker-component name="birthday" defaultdate="{{ $mixProfile['birthday'] }}"/>
                 </div>
                 <div class="col-lg-6 col-md-6 mb-3">
                     <h6 style="text-align:left;"><i class="fa fa-desktop"></i> 得意な技術</h6>
@@ -50,7 +50,7 @@
             </div>
             <div class="mb-3" align="center">
                 <button type="button" class="btn btn-primary col-5 col-md-5" data-toggle="modal" data-target="#Modal">登録</button>
-                <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('user.profile.show', ['profile' => Auth::user()->member_id]) }}'">キャンセル</button>
+                <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('user.profile.show', ['profile' => Auth::user()->employee_id]) }}'">キャンセル</button>
             </div>
 
             {{-- モーダル --}}
@@ -78,10 +78,8 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
+<script type="module">
     $(function() {
-        $("#birthday").datepicker();
-
         $('#ImageUpload').on('change', function (e) {
             let reader = new FileReader();
             reader.onload = function (e) {

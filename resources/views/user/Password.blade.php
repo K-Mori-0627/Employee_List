@@ -7,7 +7,7 @@
     <div class="container wrapper">
         <h1><i class="fa fa-key"></i> パスワード変更</h1>
         <hr />
-        <form action="{{ route('user.password.update', ['password' => Auth::user()->member_id]) }}" method="POST" autocomplete="off">
+        <form action="{{ route('user.password.update', ['password' => Auth::user()->employee_id]) }}" method="POST" autocomplete="off">
             @method('PUT')
             @csrf
             <div align="center">
@@ -42,7 +42,7 @@
                 </div>
                 <br />
                 <button type="button" class="btn btn-primary col-5 col-md-5" data-toggle="modal" data-target="#Modal">変更</button>
-                <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('user.profile.show', ['profile' => Auth::user()->member_id]) }}'">キャンセル</button>
+                <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('user.profile.show', ['profile' => Auth::user()->employee_id]) }}'">キャンセル</button>
             </div>
 
             {{-- モーダル --}}
@@ -71,7 +71,7 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
+<script type="module">
     $(function() {
         $(".toggle-password").click(function () {
             $(this).toggleClass("fa-eye fa-eye-slash");

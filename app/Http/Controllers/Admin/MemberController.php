@@ -11,8 +11,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Utility\Utility;
 use App\Models\User;
-use App\Models\CodeTable;
+use App\Models\Employee;
 use App\Models\Information;
 use App\Rules\PasswordRule;
 use App\Http\Controllers\Controller;
@@ -44,10 +45,11 @@ class MemberController extends Controller
     {
         $Query = User::query();
 
-        // 団員データ取得
-        $mixMembers = $Query->join('code_table', 'code_table.value', 'users.role')
+        // 社員データ取得
+        $mixMembers = $Query->join('employees', 'employees.employee_id', 'users.employee_id')
+                            ->join('code_table', 'code_table.value', 'employees.role')
                             ->where('code_type', '役職')
-                            ->select('users.id', 'name', 'login_id', 'game_id', 'rank', 'caption', 'last_login_date')
+                            ->select('users.employee_id', 'name_kana', 'name_roma', 'caption', 'email')
                             ->sortable()->paginate(10);
 
         return view('admin/MemberSetting', compact('mixMembers'));
@@ -60,10 +62,11 @@ class MemberController extends Controller
      */
     public function create()
     {
-        $CodeTable = new CodeTable();
-        $aryRoleData = $CodeTable::GetRoleData();
+        $Utility = new Utility();
+        $aryRoleData = $Utility::GetRoleData();
+        $aryDptData = $Utility::GetDptData();
 
-        return view('admin/MemberRegister', compact('aryRoleData'));
+        return view('admin/MemberRegister', compact('aryRoleData', 'aryDptData'));
     }
 
     /**
@@ -75,9 +78,12 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'max:20'],
-            'role' => ['required'],
+            'name_kana' => ['required', 'max:20'],
+            'name_roma' => ['required', 'max:20'],
+            'email' => ['required', 'email:strict,dns,spoof'],
             'login_id' => ['required', 'min:8', 'max:20'],
+            'role' => ['required'],
+            'department' => ['required'],
             'password' => ['required', 'min:8', 'max:15', new PasswordRule()],
         ]);
 
@@ -88,23 +94,33 @@ class MemberController extends Controller
         DB::beginTransaction();
 
         try {
+            $strEmpId = str_pad(User::max('employee_id') + 1, 4, 0, STR_PAD_LEFT);
+
             User::create([
-                'name' => $aryParams['name'],
-                'role' => $aryParams['role'],
+                'name_kana' => $aryParams['name_kana'],
+                'name_roma' => $aryParams['name_roma'],
+                'employee_id' => $strEmpId,
                 'login_id' => $aryParams['login_id'],
                 'password' => Hash::make($aryParams['password']),
                 'profile_img' => "img/image.png",
-                'freespace' => "よろしくお願いします。",
+            ]);
+
+            Employee::create([
+                'employee_id' => $strEmpId,
+                'role' => $aryParams['role'],
+                'department' => $aryParams['department'],
+                'email' => $aryParams['email'],
             ]);
 
             Information::create([
-                'subject' => $aryParams['name'] . 'さんが入団しました！',
+                'title' => $aryParams['name_kana'] . 'さんが入団しました！',
+                'text' => $aryParams['name_kana'] . 'さんが入団しました！',
             ]);
             DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
+            session()->flash('toastr', config('toastr.save'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('admin.member.index');
@@ -118,12 +134,15 @@ class MemberController extends Controller
      */
     public function edit($id)
     {
-        $CodeTable = new CodeTable();
-        $aryRoleData = $CodeTable::GetRoleData();
+        $Utility = new Utility();
+        $aryRoleData = $Utility::GetRoleData();
+        $aryDptData = $Utility::GetDptData();
 
-        $mixProfile = User::find($id);
+        $Query = User::query();
+        $mixProfile = $Query->join('employees', 'employees.employee_id', 'users.employee_id')
+                            ->where('employees.employee_id', $id)->first();
 
-        return view('admin/MemberEdit', compact('aryRoleData', 'mixProfile'));
+        return view('admin/MemberEdit', compact('aryRoleData', 'aryDptData', 'mixProfile'));
     }
 
     /**
@@ -136,9 +155,12 @@ class MemberController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => ['required', 'max:20'],
-            'role' => ['required'],
+            'name_kana' => ['required', 'max:20'],
+            'name_roma' => ['required', 'max:20'],
+            'email' => ['required', 'email:strict,dns,spoof'],
             'login_id' => ['required', 'min:8', 'max:20'],
+            'role' => ['required'],
+            'department' => ['required'],
             'password' => ['nullable', 'min:8', 'max:15', new PasswordRule()],
         ]);
 
@@ -150,25 +172,31 @@ class MemberController extends Controller
 
         try {
             if (strlen($aryParams['password']) > 0) {
-                User::where('id', $id)->update([
-                    'name' => $aryParams['name'],
-                    'role' => $aryParams['role'],
+                User::where('employee_id', $id)->update([
+                    'name_kana' => $aryParams['name_kana'],
+                    'name_roma' => $aryParams['name_roma'],
                     'login_id' => $aryParams['login_id'],
                     'password' => Hash::make($aryParams['password']),
                 ]);
             } else {
-                User::where('id', $id)->update([
-                    'name' => $aryParams['name'],
-                    'role' => $aryParams['role'],
+                User::where('employee_id', $id)->update([
+                    'name_kana' => $aryParams['name_kana'],
+                    'name_roma' => $aryParams['name_roma'],
                     'login_id' => $aryParams['login_id'],
                 ]);
             }
 
+            Employee::where('employee_id', $id)->update([
+                'role' => $aryParams['role'],
+                'department' => $aryParams['department'],
+                'email' => $aryParams['email'],
+            ]);
+
             DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
+            session()->flash('toastr', config('toastr.update'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('admin.member.index');
@@ -186,12 +214,13 @@ class MemberController extends Controller
         DB::beginTransaction();
 
         try {
-            User::where('id', $id)->delete();
+            User::where('employee_id', $id)->delete();
+            Employee::where('employee_id', $id)->delete();
             DB::commit();
-            session()->flash('msg_success', '削除が完了しました。');
+            session()->flash('toastr', config('toastr.delete'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '削除に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('admin.member.index');

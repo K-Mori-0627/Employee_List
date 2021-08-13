@@ -10,15 +10,19 @@
         <form action="{{ route('admin.information.update', ['information' => $mixInfo['id']]) }}" method="POST" autocomplete="off">
             @method('PUT')
             @csrf
-            <div class="mb-3">
-                <label>本文 <span class="badge badge-danger">必須</span></label>
-                {{ Form::Text('subject', $mixInfo['subject'], $errors->has('subject') ? ['class' => 'form-control is-invalid']
-                                                                                      : ['class' => 'form-control mb-3']) }}
-                @error('subject')
-                <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
-                @enderror
-            </div>
-            <div class="mb-3" align="center">
+            <label>タイトル <span class="badge badge-danger">必須</span></label>
+            {{ Form::Text('title', $mixInfo['title'], $errors->has('title') ? ['class' => 'form-control is-invalid']
+                                                                            : ['class' => 'form-control mb-3']) }}
+            @error('title')
+            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+            @enderror
+            <label>本文 <span class="badge badge-danger">必須</span></label>
+            {{ Form::Textarea('text', $mixInfo['text'], $errors->has('text') ? ['class' => 'form-control is-invalid']
+                                                                             : ['class' => 'form-control mb-3']) }}
+            @error('text')
+            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+            @enderror
+            <div align="center">
                 <button type="button" class="btn btn-primary col-5 col-md-5" data-toggle="modal" data-target="#Modal">登録</button>
                 <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('admin.information.index') }}'">キャンセル</button>
             </div>

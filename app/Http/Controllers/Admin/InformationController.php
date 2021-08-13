@@ -39,7 +39,6 @@ class InformationController extends Controller
     public function index()
     {
         $mixInfo = Information::select()->sortable()->paginate(10);
-
         return view('admin/InformationSetting', compact('mixInfo'));
     }
 
@@ -62,7 +61,8 @@ class InformationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'subject' => ['required', 'max:255'],
+            'title' => ['required', 'max:255'],
+            'text' => ['required', 'max:255'],
         ]);
 
         $aryParams = $request->all();
@@ -73,13 +73,14 @@ class InformationController extends Controller
 
         try {
             Information::create([
-                'subject' => $aryParams['subject'],
+                'title' => $aryParams['title'],
+                'text' => $aryParams['text'],
             ]);
             DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
+            session()->flash('toastr', config('toastr.save'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('admin.information.index');
@@ -108,7 +109,8 @@ class InformationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject' => ['required', 'max:255'],
+            'title' => ['required', 'max:255'],
+            'text' => ['required', 'max:255'],
         ]);
 
         $aryParams = $request->all();
@@ -118,13 +120,15 @@ class InformationController extends Controller
         DB::beginTransaction();
 
         try {
-            $mixArticle = Information::find($id);
-            $mixArticle->fill($aryParams)->save();
+            Information::where('id', $id)->update([
+                'title' => $aryParams['title'],
+                'text' => $aryParams['text'],
+            ]);
             DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
+            session()->flash('toastr', config('toastr.update'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
+            session()->flash('toastr', config('toastr.erroe'));
         }
 
         return redirect()->route('admin.information.index');
@@ -144,10 +148,10 @@ class InformationController extends Controller
         try {
             Information::where('id', $id)->delete();
             DB::commit();
-            session()->flash('msg_success', '削除が完了しました。');
+            session()->flash('toastr', config('toastr.delete'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '削除に失敗しました。');
+            session()->flash('toastr', config('toastr.erroe'));
         }
 
         return redirect()->route('admin.information.index');

@@ -11,6 +11,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Employee;
 use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Rules\PasswordRule;
@@ -42,8 +43,9 @@ class HomeController extends Controller
     {
         // 団員データ取得
         $mixAdmins = Admin::select()->sortable()->paginate(10);
+        $models = Employee::all();
 
-        return view('admin/home', compact('mixAdmins'));
+        return view('admin/home', compact('models'));
     }
 
     /**

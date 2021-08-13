@@ -1,67 +1,40 @@
-@extends('layouts.admin.app')
+
+@extends('layouts.admin.LoginBase')
+
+@section('Title', '管理者')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+    <form class="form-signin" action="{{ route('admin.login') }}" method="POST" autocomplete="off">
+        @csrf
+        <div class="text-center mb-4">
+            <h1>Employee List<br/>Administrator</h1>
+        </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('admin.login') }}">
-                        @csrf
+        <div class="form-label-group">
+            <input type="text" id="inputEmail" name="login_id" class="form-control" placeholder="LoginID" required autofocus>
+            <label for="inputRoginId">LoginID</label>
+        </div>
 
-                        <div class="form-group row">
-                            <label for="login_id" class="col-md-4 col-form-label text-md-right">{{ __('Login ID') }}</label>
+        <div class="form-label-group">
+            <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+            <span class="field-icon"><i toggle="password-field" class="fas fa-eye toggle-password"></i></span>
+            <label for="inputPassword">Password</label>
+        </div>
 
-                            <div class="col-md-6">
-                                <input id="login_id" type="login_id" class="form-control @error('login_id') is-invalid @enderror" name="login_id" value="{{ old('login_id') }}" required autofocus>
-
-                                @error('login_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div class="form-group ">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                <label class="form-check-label" for="remember">ログイン状態を保持する</label>
             </div>
         </div>
-    </div>
-</div>
+
+        <button class="btn-lg btn-primary btn-block" type="submit">ログイン</button>
+
+        <hr>
+        @if (Route::has('admin.register'))
+        <button type="button" class="btn-lg btn-success btn-block" onclick="location.href='{{ route('admin.register') }}'">新規登録</button>
+        @endif
+
+        <p class="mt-5 mb-3 text-center"><i class="far fa-copyright"></i> 2021 Employee List Ver.1.0.1</p>
+    </form>
 @endsection

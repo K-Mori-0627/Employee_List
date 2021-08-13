@@ -13,7 +13,7 @@
             @foreach($mixInfo as $Item)
 			<dl>
                 <dt>{{ date('Y/m/d H:i',  strtotime($Item['created_at'])) }}</dt>
-                <dd>{{ $Item['subject'] }}</dd>
+                <dd>{{ $Item['title'] }}</dd>
             </dl>
             @endforeach
             @else

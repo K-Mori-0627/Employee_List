@@ -10,9 +10,9 @@
         <div class="mb-3" align="center">管理部</div>
         <div class="member_box row">
             @foreach ($mixLeader as $Item)
-            <div class="sortable" id="{{ $Item['member_id'] }}">
-                <div class="member" id="{{ $Item['member_id'] }}">
-                    <a href="{{ route('user.profile.show', ['profile' => $Item['member_id']]) }}">
+            <div class="sortable" id="{{ $Item['employee_id'] }}">
+                <div class="member" id="{{ $Item['employee_id'] }}">
+                    <a href="{{ route('user.profile.show', ['profile' => $Item['employee_id']]) }}">
                         @if (is_null($Item['profile_img']))
                         <p class="trim"><img src="{{ asset('img/image.png') }}"></p>
                         @else
@@ -28,9 +28,9 @@
         <div class="mb-3" align="center">営業部</div>
         <div class="member_box row">
             @foreach ($mixSubLeader as $Item)
-            <div class="sortable" id="{{ $Item['member_id'] }}">
-                <div class="member" id="{{ $Item['member_id'] }}">
-                    <a href="{{ route('user.profile.show', ['profile' => $Item['member_id']]) }}">
+            <div class="sortable" id="{{ $Item['employee_id'] }}">
+                <div class="member" id="{{ $Item['employee_id'] }}">
+                    <a href="{{ route('user.profile.show', ['profile' => $Item['employee_id']]) }}">
                         @if (is_null($Item['profile_img']))
                         <p class="trim"><img src="{{ asset('img/image.png') }}"></p>
                         @else
@@ -46,9 +46,9 @@
         <div class="mb-3" align="center">関東支部</div>
         <div class="member_box row">
             @foreach ($mixAtkLeader as $Item)
-            <div class="sortable" id="{{ $Item['member_id'] }}">
-                <div class="member" id="{{ $Item['member_id'] }}">
-                    <a href="{{ route('user.profile.show', ['profile' => $Item['member_id']]) }}">
+            <div class="sortable" id="{{ $Item['employee_id'] }}">
+                <div class="member" id="{{ $Item['employee_id'] }}">
+                    <a href="{{ route('user.profile.show', ['profile' => $Item['employee_id']]) }}">
                         @if (is_null($Item['profile_img']))
                         <p class="trim"><img src="{{ asset('img/image.png') }}"></p>
                         @else
@@ -64,9 +64,9 @@
         <div class="mb-3" align="center">関西支部</div>
         <div class="member_box row">
             @foreach ($mixDefLeader as $Item)
-            <div class="sortable" id="{{ $Item['member_id'] }}">
-                <div class="member" id="{{ $Item['member_id'] }}">
-                    <a href="{{ route('user.profile.show', ['profile' => $Item['member_id']]) }}">
+            <div class="sortable" id="{{ $Item['employee_id'] }}">
+                <div class="member" id="{{ $Item['employee_id'] }}">
+                    <a href="{{ route('user.profile.show', ['profile' => $Item['employee_id']]) }}">
                         @if (is_null($Item['profile_img']))
                         <p class="trim"><img src="{{ asset('img/image.png') }}"></p>
                         @else

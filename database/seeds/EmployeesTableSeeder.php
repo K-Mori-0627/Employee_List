@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class MembersTableSeeder extends Seeder
+class EmployeesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,13 +12,13 @@ class MembersTableSeeder extends Seeder
     public function run()
     {
         // データのクリア
-        DB::table('members')->truncate();
+        DB::table('employees')->truncate();
 
-        DB::table('members')->insert([
-            'member_id'         => '0001',
+        DB::table('employees')->insert([
+            'employee_id'       => '0001',
             'role'              => '0',
             'department'        => '0',
-            'email'             => 'test@test.com'
+            'email'             => 'test@test.com',
         ]);
     }
 }

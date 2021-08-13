@@ -81,7 +81,7 @@
 @endsection
 
 @section('script')
-<script type="text/javascript">
+<script type="module">
     $(function() {
         $(".btn-pw").click(function() {
             var letters = 'abcdefghijklmnopqrstuvwxyz';

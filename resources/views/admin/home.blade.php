@@ -6,6 +6,8 @@
     <br />
     <div class="container wrapper">
         <h2 class="heading" data-en="Home"><i class="fa fa-home"></i><span> ホーム</span></h2>
+        <bootstrap-table-component models='@json($models)' />
+        {{--
         <div class="ttl mb-3"><i class="fa fa-users"></i> 管理者一覧</div>
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm text-nowrap table-dark">
@@ -39,11 +41,12 @@
             </table>
             {{ $mixAdmins->appends(request()->query())->links() }}
         </div>
+        --}}
     </div>
 @endsection
 
 @section('script')
-<script type="text/javascript">
+<script type="module">
     $(function() {
         $(".btn-dell").click(function() {
             if (!confirm("選択した管理者を削除しますか？")) {

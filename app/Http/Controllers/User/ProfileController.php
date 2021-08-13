@@ -12,7 +12,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\User;
-use App\Models\Member;
+use App\Models\Employee;
 use App\Http\Utility\Utility;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -42,10 +42,10 @@ class ProfileController extends Controller
     public function show($id)
     {
         $Query = User::query();
-        $mixProfile = $Query->join('members', 'members.member_id', 'users.member_id')
-                            ->join('code_table', 'code_table.value', 'members.role')
+        $mixProfile = $Query->join('employees', 'employees.employee_id', 'users.employee_id')
+                            ->join('code_table', 'code_table.value', 'employees.role')
                             ->where('code_type', '役職')
-                            ->where('users.member_id', $id)
+                            ->where('users.employee_id', $id)
                             ->first();
 
         return view('user/Profile', compact('mixProfile'));
@@ -78,7 +78,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'login_id' => ['required', 'min:8', 'max:20'],
-            'name' => ['required', 'max:20'],
+            'birthday' => ['date'],
         ]);
 
         $aryParams = $request->all();
@@ -88,19 +88,23 @@ class ProfileController extends Controller
         DB::beginTransaction();
 
         try {
-            User::where('id', $id)->update([
-                'name' => $aryParams['name'],
+            User::where('employee_id', $id)->update([
                 'login_id' => $aryParams['login_id'],
-                'hobby' => $aryParams['hobby'],
-                'freespace' => $aryParams['freespace'],
                 'profile_img' => $aryParams['profile_img'],
             ]);
 
+            Member::where('employee_id', $id)->update([
+                'birthday' => $aryParams['birthday'],
+                'technology' => $aryParams['technology'],
+                'hobby' => $aryParams['hobby'],
+                'freespace' => $aryParams['freespace'],
+            ]);
+
             DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
+            session()->flash('toastr', config('toastr.update'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('user.profile.show', $id);

@@ -16,7 +16,7 @@
 <body>
     @yield('content')
 
-    <script type="text/javascript">
+    <script type="module">
         $(function() {
             $(".toggle-password").click(function () {
                 $(this).toggleClass("fa-eye fa-eye-slash");

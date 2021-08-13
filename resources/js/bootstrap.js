@@ -11,6 +11,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
+    require('jquery-ui/ui/widgets/dialog.js');
+    require('jquery-ui/ui/i18n/datepicker-ja.js');
 } catch (e) {}
 
 /**

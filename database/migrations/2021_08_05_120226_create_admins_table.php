@@ -14,10 +14,10 @@ class CreateAdminsTable extends Migration
     public function up()
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name')->length(20);
-            $table->string('login_id')->length(20);
-            $table->string('password');
+            $table->bigIncrements('id')->comment('ID');
+            $table->string('name')->length(20)->comment('名前');
+            $table->string('login_id')->length(20)->comment('ログインID');
+            $table->string('password')->comment('パスワード');
             $table->rememberToken();
             $table->timestamps();
         });

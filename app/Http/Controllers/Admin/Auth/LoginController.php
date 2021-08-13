@@ -28,7 +28,11 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::ADMIN_HOME;
+    //protected $redirectTo = RouteServiceProvider::ADMIN_HOME;
+    protected function redirectTo() {
+        session()->flash('toastr', config('toastr.login'));
+        return RouteServiceProvider::ADMIN_HOME;
+    }
 
     /**
      * Create a new controller instance.

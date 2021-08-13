@@ -9,55 +9,76 @@
         <br />
         <form action="{{ route('admin.member.store') }}" method="POST" autocomplete="off">
             @csrf
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="mb-3">
-                        <h6 style="text-align:left;"><i class="fa fa-user-alt"></i> 名前 <span class="badge badge-danger">必須</span></h6>
-                        {{ Form::Text('name', null, $errors->has('name') ? ['class' => 'form-control is-invalid']
-                                                                         : ['class' => 'form-control']) }}
-                        @error('name')
+            <h6 class="sub_line" style="text-align:left;">社員情報</h6>
+            <div class="row mb-3">
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fa fa-user-alt"></i> 名前（かな） <span class="badge badge-danger">必須</span></h6>
+                    {{ Form::Text('name_kana', null, $errors->has('name_kana') ? ['class' => 'form-control is-invalid']
+                                                                               : ['class' => 'form-control']) }}
+                    @error('name_kana')
+                    <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fa fa-user-alt"></i> 名前（英字） <span class="badge badge-danger">必須</span></h6>
+                    {{ Form::Text('name_roma', null, $errors->has('name_roma') ? ['class' => 'form-control is-invalid']
+                                                                               : ['class' => 'form-control']) }}
+                    @error('name_roma')
+                    <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fa fa-envelope"></i> メールアドレス <span class="badge badge-danger">必須</span></h6>
+                    {{ Form::Text('email', null, $errors->has('email') ? ['class' => 'form-control is-invalid']
+                                                                       : ['class' => 'form-control']) }}
+                    @error('email')
+                    <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fas fa-id-card-alt"></i> ログインID <span class="badge badge-danger">必須</span></h6>
+                    <div class="input-group">
+                        {{ Form::Text('login_id', null, $errors->has('login_id') ? ['class' => 'form-control is-invalid']
+                                                                                 : ['class' => 'form-control']) }}
+                        <div class="input-group-append">
+                            <button class="btn btn-primary btn-id" type="button"><i class="fa fa-pen"></i>ログインID生成</button>
+                        </div>
+                        @error('login_id')
                         <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                         @enderror
-                    </div>
-                    <div class="mb-3">
-                        <h6 style="text-align:left;"><i class="fas fa-id-card-alt"></i> ログインID <span class="badge badge-danger">必須</span></h6>
-                        <div class="input-group">
-                            {{ Form::Text('login_id', null, $errors->has('login_id') ? ['class' => 'form-control is-invalid']
-                                                                                     : ['class' => 'form-control']) }}
-                            <div class="input-group-append">
-                                <button class="btn btn-primary btn-id" type="button"><i class="fa fa-pen"></i>ログインID生成</button>
-                            </div>
-                            @error('login_id')
-                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
-                            @enderror
-                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="mb-3">
-                        <h6 style="text-align:left;"><i class="fa fa-user-plus"></i> 役職 <span class="badge badge-danger">必須</span></h6>
-                        {{ Form::Select('role', $aryRoleData, null, $errors->has('role') ? ['class' => 'form-control is-invalid']
-                                                                                         : ['class' => 'form-control']) }}
-                        @error('role')
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fa fa-user-plus"></i> 役職 <span class="badge badge-danger">必須</span></h6>
+                    {{ Form::Select('role', $aryRoleData, null, $errors->has('role') ? ['class' => 'form-control is-invalid']
+                                                                                     : ['class' => 'form-control']) }}
+                    @error('role')
+                    <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fa fa-user-plus"></i> 部署 <span class="badge badge-danger">必須</span></h6>
+                    {{ Form::Select('department', $aryDptData, null, $errors->has('department') ? ['class' => 'form-control is-invalid']
+                                                                                                : ['class' => 'form-control']) }}
+                    @error('department')
+                    <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <h6 style="text-align:left;"><i class="fas fa-key"></i> パスワード <span class="badge badge-danger">必須</span></h6>
+                    <div class="input-group">
+                        {{ Form::Text('password', null, $errors->has('password') ? ['class' => 'form-control is-invalid']
+                                                                                 : ['class' => 'form-control']) }}
+                        <div class="input-group-append">
+                            <button class="btn btn-primary btn-pw" type="button"><i class="fa fa-pen"></i>パスワード生成</button>
+                        </div>
+                        @error('password')
                         <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                         @enderror
-                    </div>
-                    <div class="mb-3">
-                        <h6 style="text-align:left;"><i class="fas fa-key"></i> パスワード <span class="badge badge-danger">必須</span></h6>
-                        <div class="input-group">
-                            {{ Form::Text('password', null, $errors->has('password') ? ['class' => 'form-control is-invalid']
-                                                                                     : ['class' => 'form-control']) }}
-                            <div class="input-group-append">
-                                <button class="btn btn-primary btn-pw" type="button"><i class="fa fa-pen"></i>パスワード生成</button>
-                            </div>
-                            @error('password')
-                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
-                            @enderror
-                        </div>
                     </div>
                 </div>
             </div>
-            <br />
+
             <div align="center">
                 <button type="button" class="btn btn-primary col-5 col-md-5" data-toggle="modal" data-target="#Modal">登録</button>
                 <button type="button" class="btn btn-secondary col-5 col-md-5" onclick="location.href='{{ route('admin.member.index') }}'">キャンセル</button>
@@ -84,12 +105,11 @@
                 </div>
             </div>
         </form>
-        <br /><br />
     </div>
 @endsection
 
 @section('script')
-<script type="text/javascript">
+<script type="module">
     $(function() {
         $(".btn-pw").click(function() {
             var letters = 'abcdefghijklmnopqrstuvwxyz';

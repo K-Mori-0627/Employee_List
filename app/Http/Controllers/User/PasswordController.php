@@ -69,10 +69,10 @@ class PasswordController extends Controller
                 'password' => Hash::make($aryParams['password']),
             ]);
             DB::commit();
-            session()->flash('msg_success', 'パスワード変更が完了しました。');
+            session()->flash('toastr', config('toastr.update'));
         } catch (\Exception $e) {
             DB::rollback();
-            session()->flash('msg_error', 'パスワード変更に失敗しました。');
+            session()->flash('toastr', config('toastr.error'));
         }
 
         return redirect()->route('user.profile.show', $id);

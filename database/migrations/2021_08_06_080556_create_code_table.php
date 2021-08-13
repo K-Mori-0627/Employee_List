@@ -14,10 +14,10 @@ class CreateCodeTable extends Migration
     public function up()
     {
         Schema::create('code_table', function (Blueprint $table) {
-            $table->string('code_type');
-            $table->string('value');
-            $table->string('caption');
-            $table->integer('order');
+            $table->string('code_type')->comment('コード種別');
+            $table->string('value')->comment('値（コード）');
+            $table->string('caption')->comment('値（名前）');
+            $table->integer('order')->comment('順番');
         });
     }
 

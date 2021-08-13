@@ -15,7 +15,9 @@ class User extends Authenticatable
 
     public $sortable = [
         'id',
-        'name',
+        'name_kana',
+        'name_roma',
+        'employee_id',
     ];
 
     /**
@@ -24,9 +26,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'name_kana',
+        'name_roma',
+        'employee_id',
         'login_id',
         'password',
+        'profile_img',
     ];
 
     /**

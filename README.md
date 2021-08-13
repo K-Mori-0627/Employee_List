@@ -6,9 +6,10 @@
 ・Larabel 6.20.31  
 ・MySQL 5.7  
 ・JavaScript  
-・JQuery  
-・Vue.js  
-・Bootstrap
+・JQuery 3.5.1  
+・Vue.js 4.5.13  
+・Bootstrap 4.5.0  
+・Font Awesome 4.7.0  
 
 ## 開発環境
 ・macOS Big Sur  
