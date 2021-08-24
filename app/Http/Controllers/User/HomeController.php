@@ -11,9 +11,8 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use App\Models\Information;
 use App\Http\Controllers\Controller;
+use App\Services\User\HomeServiceInterface;
 
 /**
  * ホーム画面コントローラー
@@ -22,26 +21,25 @@ use App\Http\Controllers\Controller;
  */
 class HomeController extends Controller
 {
+    private $homeService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(HomeServiceInterface $homeServiceInterface)
     {
+        $this->homeService = $homeServiceInterface;
         $this->middleware('auth:user');
     }
 
     /**
      * ホーム画面初期表示
      *
-     * @return 表示するblade
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        // お知らせ取得
-        $mixInfo = Information::orderby('created_at', 'desc')->take(5)->get();
-
-        // 団員データ取得
-        $mixMemberCnt = User::count();
+        list($mixInfo, $mixMemberCnt) = $this->homeService->index();
 
         return view('user.home', compact('mixInfo', 'mixMemberCnt'));
     }

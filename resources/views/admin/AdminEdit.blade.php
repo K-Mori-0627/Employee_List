@@ -17,7 +17,7 @@
                         {{ Form::Text('name', $mixAdmin['name'], $errors->has('name') ? ['class' => 'form-control is-invalid']
                                                                                       : ['class' => 'form-control']) }}
                         @error('name')
-                        <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
@@ -29,7 +29,7 @@
                                 <button class="btn btn-primary btn-id" type="button"><i class="fa fa-pen"></i>ログインID生成</button>
                             </div>
                             @error('login_id')
-                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                                <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                                 <button class="btn btn-primary btn-pw" type="button"><i class="fa fa-pen"></i>パスワード生成</button>
                             </div>
                             @error('password')
-                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                                <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
@@ -57,8 +57,8 @@
             </div>
 
             {{-- モーダル --}}
-            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">管理者編集</h5>

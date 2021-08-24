@@ -6,26 +6,10 @@
 
 require('./bootstrap');
 
-$(".datepicker").datepicker({
-    dateFormat: 'yy-mm-dd',
-    changeMonth: true,
-    changeYear: true,
-    yearRange: '1901:'
-});
-
 window.Vue = require('vue');
 window.toastr = require('toastr');
 
 require('@fortawesome/fontawesome-free/js/all.js');
-require('bootstrap-table/dist/bootstrap-table.min.css');
-require('bootstrap-table/dist/bootstrap-table.js');
-
-require('tableexport.jquery.plugin');
-require('bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js');
-require('bootstrap-table/dist/extensions/print/bootstrap-table-print.min.js');
-
-require('bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.min.css');
-require('bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.min.js');
 
 /**
  * The following block of code may be used to automatically register your
@@ -37,10 +21,6 @@ require('bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-c
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('bootstrap-table-component', require('./components/BootstrapTableComponent.vue').default);
-Vue.component('vuejs-datepicker-component', require('./components/VuejsDatepickerComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

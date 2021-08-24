@@ -18,7 +18,7 @@
                                                                              : ['class' => 'form-control', 'id' => 'current', 'placeholder' => '現在のパスワード']) }}
                         <span class="field-icon"><i toggle="password-field" class="fas fa-eye toggle-password"></i></span>
                         @error('current')
-                        <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-3">
@@ -28,7 +28,7 @@
                         <span class="field-icon"><i toggle="password-field" class="fas fa-eye toggle-password"></i></span>
                         <span class="float-left">8文字以上15文字以下の半角英数字</span>
                         @error('password')
-                        <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
+                            <span class="invalid-feedback float-left" role="alert">{{ $message }}</span>
                         @enderror
                     </div>
                     <br />
@@ -46,8 +46,8 @@
             </div>
 
             {{-- モーダル --}}
-            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">パスワード変更</h5>

@@ -11,10 +11,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Information;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Admin\InformationRequest;
+use App\Services\Admin\InformationServiceInterface;
 
 /**
  * お知らせ一覧画面コントローラー
@@ -23,11 +22,14 @@ use Illuminate\Support\Facades\DB;
  */
 class InformationController extends Controller
 {
+    private $informationService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(InformationServiceInterface $informationServiceInterface)
     {
+        $this->informationService = $informationServiceInterface;
         $this->middleware('auth:admin');
     }
 
@@ -38,7 +40,8 @@ class InformationController extends Controller
      */
     public function index()
     {
-        $mixInfo = Information::select()->sortable()->paginate(10);
+        $mixInfo = $this->informationService->index();
+
         return view('admin/InformationSetting', compact('mixInfo'));
     }
 
@@ -55,33 +58,12 @@ class InformationController extends Controller
     /**
      * お知らせ登録処理
      *
-     * @param Request $request 登録データ
+     * @param InformationRequest $request 登録データ
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InformationRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'max:255'],
-            'text' => ['required', 'max:255'],
-        ]);
-
-        $aryParams = $request->all();
-        unset($aryParams['_token']);
-
-        // DBトランザクション開始
-        DB::beginTransaction();
-
-        try {
-            Information::create([
-                'title' => $aryParams['title'],
-                'text' => $aryParams['text'],
-            ]);
-            DB::commit();
-            session()->flash('toastr', config('toastr.save'));
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('toastr', config('toastr.error'));
-        }
+        $this->informationService->store($request);
 
         return redirect()->route('admin.information.index');
     }
@@ -94,7 +76,7 @@ class InformationController extends Controller
      */
     public function edit($id)
     {
-        $mixInfo = Information::find($id);
+        $mixInfo = $this->informationService->edit($id);
 
         return view('admin/InformationEdit', compact('mixInfo'));
     }
@@ -102,34 +84,13 @@ class InformationController extends Controller
     /**
      * お知らせ更新処理
      *
-     * @param Request $_request 登録データ
+     * @param InformationRequest $request 登録データ
      * @param integer $id お知らせID
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(InformationRequest $request, $id)
     {
-        $request->validate([
-            'title' => ['required', 'max:255'],
-            'text' => ['required', 'max:255'],
-        ]);
-
-        $aryParams = $request->all();
-        unset($aryParams['_token']);
-
-        // DBトランザクション開始
-        DB::beginTransaction();
-
-        try {
-            Information::where('id', $id)->update([
-                'title' => $aryParams['title'],
-                'text' => $aryParams['text'],
-            ]);
-            DB::commit();
-            session()->flash('toastr', config('toastr.update'));
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('toastr', config('toastr.erroe'));
-        }
+        $this->informationService->update($request, $id);
 
         return redirect()->route('admin.information.index');
     }
@@ -142,17 +103,20 @@ class InformationController extends Controller
      */
     public function destroy($id)
     {
-        // DBトランザクション開始
-        DB::beginTransaction();
+        $this->informationService->destroy($id);
 
-        try {
-            Information::where('id', $id)->delete();
-            DB::commit();
-            session()->flash('toastr', config('toastr.delete'));
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('toastr', config('toastr.erroe'));
-        }
+        return redirect()->route('admin.information.index');
+    }
+
+    /**
+     * お知らせ検索
+     *
+     * @param InformationRequest $request 検索条件
+     * @return \Illuminate\Http\Response
+     */
+    public function search(InformationRequest $request)
+    {
+        $this->informationService->search($request);
 
         return redirect()->route('admin.information.index');
     }

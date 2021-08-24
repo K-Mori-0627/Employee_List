@@ -32,7 +32,7 @@
 
         <hr>
         @if (Route::has('admin.register'))
-        <button type="button" class="btn-lg btn-success btn-block" onclick="location.href='{{ route('admin.register') }}'">新規登録</button>
+            <button type="button" class="btn-lg btn-success btn-block" onclick="location.href='{{ route('admin.register') }}'">新規登録</button>
         @endif
 
         <p class="mt-5 mb-3 text-center"><i class="far fa-copyright"></i> 2021 Employee List Ver.1.0.1</p>

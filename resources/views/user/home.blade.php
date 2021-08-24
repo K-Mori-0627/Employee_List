@@ -10,14 +10,15 @@
         <div class="ttl"><i class="fas fa-info-circle"></i> お知らせ</div>
         <div class="topics">
             @if($mixInfo->count() > 0)
-            @foreach($mixInfo as $Item)
-			<dl>
-                <dt>{{ date('Y/m/d H:i',  strtotime($Item['created_at'])) }}</dt>
-                <dd>{{ $Item['title'] }}</dd>
-            </dl>
-            @endforeach
+                @foreach($mixInfo as $Item)
+                    <dl>
+                        <dt>{{ date('Y/m/d H:i',  strtotime($Item['created_at'])) }}</dt>
+                        <dd>{{ $Item['title'] }}</dd>
+                        <dd>{{ $Item['text'] }}</dd>
+                    </dl>
+                @endforeach
             @else
-            <span>お知らせはありません。</span>
+                <span>お知らせはありません。</span>
             @endif
         </div>
         <a href="{{ route('user.information.index') }}" class="float-right">お知らせ一覧</a>

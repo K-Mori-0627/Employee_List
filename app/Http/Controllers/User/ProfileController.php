@@ -11,12 +11,9 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\User;
-use App\Models\Employee;
-use App\Http\Utility\Utility;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ProfileRequest;
+use App\Services\User\ProfileServiceInterface;
 
 /**
  * プロフィール画面コントローラー
@@ -25,11 +22,14 @@ use Illuminate\Support\Facades\DB;
  */
 class ProfileController extends Controller
 {
+    private $profileService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(ProfileServiceInterface $profileServiceInterface)
     {
+        $this->profileService = $profileServiceInterface;
         $this->middleware('auth:user');
     }
 
@@ -41,12 +41,7 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        $Query = User::query();
-        $mixProfile = $Query->join('employees', 'employees.employee_id', 'users.employee_id')
-                            ->join('code_table', 'code_table.value', 'employees.role')
-                            ->where('code_type', '役職')
-                            ->where('users.employee_id', $id)
-                            ->first();
+        $mixProfile = $this->profileService->show($id);
 
         return view('user/Profile', compact('mixProfile'));
     }
@@ -59,10 +54,7 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        $mixProfile = User::find($id);
-
-        $Utility = new Utility();
-        $aryRoleData = $Utility::GetRoleData();
+        list($mixProfile, $aryRoleData) = $this->profileService->edit($id);
 
         return view('user/ProfileEdit', compact('mixProfile', 'aryRoleData'));
     }
@@ -71,41 +63,12 @@ class ProfileController extends Controller
      * プロフィール編集処理
      *
      * @param Integer $id ユーザーID
-     * @param Request $request 登録データ
+     * @param ProfileRequest $request 登録データ
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProfileRequest $request, $id)
     {
-        $request->validate([
-            'login_id' => ['required', 'min:8', 'max:20'],
-            'birthday' => ['date'],
-        ]);
-
-        $aryParams = $request->all();
-        unset($aryParams['_token']);
-
-        // DBトランザクション開始
-        DB::beginTransaction();
-
-        try {
-            User::where('employee_id', $id)->update([
-                'login_id' => $aryParams['login_id'],
-                'profile_img' => $aryParams['profile_img'],
-            ]);
-
-            Member::where('employee_id', $id)->update([
-                'birthday' => $aryParams['birthday'],
-                'technology' => $aryParams['technology'],
-                'hobby' => $aryParams['hobby'],
-                'freespace' => $aryParams['freespace'],
-            ]);
-
-            DB::commit();
-            session()->flash('toastr', config('toastr.update'));
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('toastr', config('toastr.error'));
-        }
+        $this->profileService->update($request, $id);
 
         return redirect()->route('user.profile.show', $id);
     }

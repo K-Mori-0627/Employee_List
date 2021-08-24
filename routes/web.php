@@ -31,23 +31,23 @@ Route::namespace('User')->prefix('user')->name('user.')->group(function () {
     Route::middleware('auth:user')->group(function () {
         // ホーム画面
         Route::resource('home', 'HomeController')
-               ->only(['index']);
+             ->only(['index']);
 
         // お知らせ一覧画面
         Route::resource('information', 'InformationController')
-               ->only(['index']);
+             ->only(['index']);
 
         // メンバーリスト画面
-        Route::resource('member', 'MemberController')
-               ->only(['index']);
+        Route::resource('employee', 'EmployeeController')
+             ->only(['index']);
 
         // プロフィール画面
         Route::resource('profile', 'ProfileController')
-               ->only(['show', 'edit', 'update']);
+             ->only(['show', 'edit', 'update']);
 
         // パスワード変更画面
         Route::resource('password', 'PasswordController')
-               ->only(['index', 'update']);
+             ->only(['index', 'update']);
 
     });
 });
@@ -68,15 +68,21 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         // ホーム画面
         Route::resource('home', 'HomeController')
-               ->only(['index', 'edit', 'update', 'destroy']);
+             ->only(['index', 'edit', 'update', 'destroy']);
+        Route::get('/admin/home/{home}/search', 'HomeController@search')
+             ->name('home.search');
 
         // お知らせ設定画面
         Route::resource('information', 'InformationController')
-               ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+             ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('/admin/information/{information}/search', 'InformationController@search')
+             ->name('information.search');
 
         // メンバー設定画面
-        Route::resource('member', 'MemberController')
-               ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::resource('employee', 'EmployeeController')
+             ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('/admin/employee/{employee}/search', 'EmployeeController@search')
+             ->name('employee.search');
 
     });
 

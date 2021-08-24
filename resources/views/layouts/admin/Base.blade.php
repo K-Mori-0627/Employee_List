@@ -25,7 +25,7 @@
                 <div class="navbar-nav ml-auto">
                     <a style="font-size: 16px" href="{{ route('admin.home.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*home*') ? 'active' : '' }}"><i class="fa fa-home"></i>Home</a>
                     <a style="font-size: 16px" href="{{ route('admin.information.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*information*') ? 'active' : '' }}"><i class="fas fa-info-circle"></i>お知らせ</a>
-                    <a style="font-size: 16px" href="{{ route('admin.member.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*member*') ? 'active' : '' }}"><i class="fa fa-address-book"></i>団員リスト</a>
+                    <a style="font-size: 16px" href="{{ route('admin.employee.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*employee*') ? 'active' : '' }}"><i class="fa fa-address-book"></i>社員リスト</a>
                     <div class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown" class="nav-item nav-link dropdown-toggle user-action">
                             <img src="{{ asset('img/admin.png') }}" class="avatar" alt="Avatar">{{ Auth::user()->name }}
@@ -50,7 +50,7 @@
                 var topBtn = $('#page-top');
                 topBtn.hide();
                 $(window).scroll(function () {
-                    if ($(this).scrollTop() > 500) {
+                    if ($(this).scrollTop() > 100) {
                         topBtn.fadeIn();
                     } else {
                         topBtn.fadeOut();
@@ -59,7 +59,7 @@
                 topBtn.click(function () {
                     $('body,html').animate({
                         scrollTop: 0
-                    }, 500);
+                    }, 100);
                     return false;
                 });
             });

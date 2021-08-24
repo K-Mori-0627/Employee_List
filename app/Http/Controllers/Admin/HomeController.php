@@ -11,13 +11,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Employee;
-use App\Models\Admin;
 use App\Http\Controllers\Controller;
-use App\Rules\PasswordRule;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\HomeRequest;
+use App\Services\Admin\HomeServiceInterface;
 
 /**
  * 管理者画面コントローラー
@@ -26,37 +22,38 @@ use Illuminate\Http\Request;
  */
 class HomeController extends Controller
 {
+    private $homeService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(HomeServiceInterface $homeServiceInterface)
     {
+        $this->homeService = $homeServiceInterface;
         $this->middleware('auth:admin');
     }
 
     /**
      * 管理者画面初期表示
      *
-     * @return 表示するblade
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        // 団員データ取得
-        $mixAdmins = Admin::select()->sortable()->paginate(10);
-        $models = Employee::all();
+        $mixAdmins = $this->homeService->index();
 
-        return view('admin/home', compact('models'));
+        return view('admin/home', compact('mixAdmins'));
     }
 
     /**
      * 管理者更新画面表示
      *
      * @param integer $id 管理者ID
-     * @return 表示するblade
+     * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $mixAdmin = Admin::find($id);
+        $mixAdmin = $this->homeService->edit($id);
 
         return view('admin/AdminEdit', compact('mixAdmin'));
     }
@@ -64,43 +61,13 @@ class HomeController extends Controller
     /**
      * 管理者更新処理
      *
-     * @param Request $_request 登録データ
+     * @param HomeRequest $_request 登録データ
      * @param integer $id 管理者ID
-     * @return 表示するblade
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(HomeRequest $request, $id)
     {
-        $request->validate([
-            'name' => ['required', 'max:20'],
-            'login_id' => ['required', 'min:8', 'max:20'],
-            'password' => ['nullable', 'min:8', 'max:15', new PasswordRule()],
-        ]);
-
-        $aryParams = $request->all();
-        unset($aryParams['_token']);
-
-        // DBトランザクション開始
-        DB::beginTransaction();
-
-        try {
-            if (strlen($aryParams['password']) > 0) {
-                Admin::where('id', $id)->update([
-                    'name' => $aryParams['name'],
-                    'login_id' => $aryParams['login_id'],
-                    'password' => Hash::make($aryParams['password']),
-                ]);
-            } else {
-                Admin::where('id', $id)->update([
-                    'name' => $aryParams['name'],
-                    'login_id' => $aryParams['login_id'],
-                ]);
-            }
-            DB::commit();
-            session()->flash('msg_success', '登録が完了しました。');
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('msg_error', '登録に失敗しました。');
-        }
+        $this->homeService->update($request, $id);
 
         return redirect()->route('admin.home.index');
     }
@@ -109,21 +76,24 @@ class HomeController extends Controller
      * 管理者削除処理
      *
      * @param integer $id 削除データ
-     * @return 表示するblade
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        // DBトランザクション開始
-        DB::beginTransaction();
+        $this->homeService->destroy($id);
 
-        try {
-            Admin::where('id', $id)->delete();
-            DB::commit();
-            session()->flash('msg_success', '削除が完了しました。');
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('msg_error', '削除に失敗しました。');
-        }
+        return redirect()->route('admin.home.index');
+    }
+
+    /**
+     * 管理者検索
+     *
+     * @param HomeRequest $request 検索条件
+     * @return \Illuminate\Http\Response
+     */
+    public function search(HomeRequest $request)
+    {
+        $this->homeService->search($request);
 
         return redirect()->route('admin.home.index');
     }

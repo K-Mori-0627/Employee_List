@@ -12,12 +12,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Rules\PasswordRule;
-use App\Rules\CurrentPasswordRule;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\User\PasswordRequest;
+use App\Services\User\PasswordServiceInterface;
 
 /**
  * パスワード変更画面コントローラー
@@ -26,11 +22,14 @@ use Illuminate\Support\Facades\Hash;
  */
 class PasswordController extends Controller
 {
+    private $passwordService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(PasswordServiceInterface $passwordServiceInterface)
     {
+        $this->passwordService = $passwordServiceInterface;
         $this->middleware('auth:user');
     }
 
@@ -47,33 +46,13 @@ class PasswordController extends Controller
     /**
      * パスワード更新処理
      *
-     * @param Request $request 登録データ
+     * @param PasswordRequest $request 登録データ
      * @param Integer $id ユーザーID
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PasswordRequest $request, $id)
     {
-        $request->validate([
-            'current' => ['required', 'min:8', 'max:15', new PasswordRule(), new CurrentPasswordRule()],
-            'password' => ['required', 'min:8', 'max:15', 'confirmed', new PasswordRule()],
-        ]);
-
-        $aryParams = $request->all();
-        unset($aryParams['_token']);
-
-        // DBトランザクション開始
-        DB::beginTransaction();
-
-        try {
-            User::where('id', $id)->update([
-                'password' => Hash::make($aryParams['password']),
-            ]);
-            DB::commit();
-            session()->flash('toastr', config('toastr.update'));
-        } catch (\Exception $e) {
-            DB::rollback();
-            session()->flash('toastr', config('toastr.error'));
-        }
+        $this->passwordService->update($request, $id);
 
         return redirect()->route('user.profile.show', $id);
     }

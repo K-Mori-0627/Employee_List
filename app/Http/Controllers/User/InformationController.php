@@ -11,8 +11,8 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\Information;
 use App\Http\Controllers\Controller;
+use App\Services\User\InformationServiceInterface;
 
 /**
  * お知らせ一覧画面コントローラー
@@ -21,11 +21,14 @@ use App\Http\Controllers\Controller;
  */
 class InformationController extends Controller
 {
+    private $informationService;
+
     /**
      * コンストラクタ
      */
-    public function __construct()
+    public function __construct(InformationServiceInterface $informationServiceInterface)
     {
+        $this->informationService = $informationServiceInterface;
         $this->middleware('auth:user');
     }
 
@@ -36,8 +39,7 @@ class InformationController extends Controller
      */
     public function index()
     {
-        // お知らせ取得
-        $mixInfo = Information::orderby('created_at', 'desc')->get();
+        $mixInfo = $this->informationService->index();
 
         return view('user.information', compact('mixInfo'));
     }

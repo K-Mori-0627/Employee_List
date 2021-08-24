@@ -11,11 +11,7 @@
             @method('PUT')
             @csrf
             <div class="mb-3" align="center">
-                @if (is_null($mixProfile['profile_img']))
-                <img class="profile-img" id="Preview" src="{{ asset('img/image.png') }}">
-                @else
-                <img class="profile-img" id="Preview" src="{{ $mixProfile['profile_img'] }}">
-                @endif
+                <img class="profile-img" id="Preview" src="{{ asset($mixProfile['profile_img']) }}">
                 <br/>
                 <input type="file" name="image" id="ImageUpload" accept='image/*' style="display:none">
                 {{ Form::Text('profile_img', $mixProfile['profile_img'], ['id' => 'ProfileImg', 'style' => 'display:none']) }}
@@ -33,7 +29,7 @@
             <div class="row mb-3">
                 <div class="col-lg-6 col-md-6 mb-3">
                     <h6 style="text-align:left;"><i class="fa fa-birthday-cake"></i> 誕生日</h6>
-                    <vuejs-datepicker-component name="birthday" defaultdate="{{ $mixProfile['birthday'] }}"/>
+                    {{ Form::Date('birthday', $mixProfile['birthday'], ['class' => 'form-control']) }}
                 </div>
                 <div class="col-lg-6 col-md-6 mb-3">
                     <h6 style="text-align:left;"><i class="fa fa-desktop"></i> 得意な技術</h6>
@@ -54,8 +50,8 @@
             </div>
 
             {{-- モーダル --}}
-            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal fade" data-backdrop="static" id="Modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">プロフィール編集</h5>

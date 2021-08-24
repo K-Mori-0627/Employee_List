@@ -24,14 +24,10 @@
             <div id="navbarCollapse" class="collapse navbar-collapse justify-content-start">
                 <div class="navbar-nav ml-auto">
                     <a style="font-size: 16px" href="{{ route('user.home.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*home*') ? 'active' : '' }}"><i class="fa fa-home"></i>Home</a>
-                    <a style="font-size: 16px" href="{{ route('user.member.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*member*') ? 'active' : '' }}"><i class="fa fa-address-book"></i>団員リスト</a>
+                    <a style="font-size: 16px" href="{{ route('user.employee.index') }}" class="nav-item nav-link d-flex align-items-center {{ request()->route()->named('*employee*') ? 'active' : '' }}"><i class="fa fa-address-book"></i>団員リスト</a>
                     <div class="nav-item dropdown">
                         <a href="#" data-toggle="dropdown" class="nav-item nav-link dropdown-toggle user-action {{ request()->route()->named('*profile*') ? 'active' : '' }}">
-                            @if (is_null(Auth::user()->profile_img))
-                            <img src="{{ asset('img/image.png') }}" class="avatar" alt="Avatar">{{ Auth::user()->name_kana }}
-                            @else
-                            <img src="{{ Auth::user()->profile_img }}" class="avatar" alt="Avatar">{{ Auth::user()->name_kana }}
-                            @endif
+                            <img src="{{ asset(Auth::user()->profile_img) }}" class="avatar" alt="Avatar">{{ Auth::user()->name_kana }}
                         </a>
                         <div class="dropdown-menu">
                             <a href="{{ route('user.profile.show', ['profile' => Auth::user()->employee_id]) }}" class="dropdown-item"><i class="fa fa-user-circle"></i>プロフィール</a>
@@ -55,7 +51,7 @@
                 var topBtn = $('#page-top');
                 topBtn.hide();
                 $(window).scroll(function () {
-                    if ($(this).scrollTop() > 500) {
+                    if ($(this).scrollTop() > 100) {
                         topBtn.fadeIn();
                     } else {
                         topBtn.fadeOut();
@@ -64,7 +60,7 @@
                 topBtn.click(function () {
                     $('body,html').animate({
                         scrollTop: 0
-                    }, 500);
+                    }, 100);
                     return false;
                 });
             });

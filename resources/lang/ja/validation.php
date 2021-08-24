@@ -151,9 +151,12 @@ return [
         'current' => '現在のパスワード',
         'password' => 'パスワード',
         'name' => '名前',
+        'name_kana' => '名前（かな）',
+        'name_roma' => '名前（英字）',
+        'email' => 'メールアドレス',
         'role' => '役職',
         'department' => '部署',
-        'tittle' => 'タイトル',
+        'title' => 'タイトル',
         'text' => '本文',
     ],
 
